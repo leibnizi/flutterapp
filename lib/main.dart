@@ -1,8 +1,4 @@
-// Step 5: Add a lazily loading infinite scrolling ListView.
-// Also, add a heart icon so users can favorite word pairings.
-// Save the word pairings in the State class.
-// Make the hearts tappable and save the favorites list in the
-// State class.
+// Step 7 (Final): Change the app's theme
 
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
@@ -14,6 +10,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Startup Name Generator',
+      theme: new ThemeData(
+        primaryColor: Colors.white,
+      ),
       home: new RandomWords(),
     );
   }
@@ -36,6 +35,9 @@ class RandomWordsState extends State<RandomWords> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Startup Name Generator'),
+        actions: <Widget>[
+          new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved)
+        ],
       ),
       body: _buildSuggestions(),
     );
@@ -78,6 +80,36 @@ class RandomWordsState extends State<RandomWords> {
           },
         );
       },
+    );
+  }
+
+  void _pushSaved() {
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (context) {
+          final tiles = _saved.map(
+            (pair) {
+              return new ListTile(
+                title: new Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+              );
+            },
+          );
+          final divided = ListTile.divideTiles(
+            context: context,
+            tiles: tiles,
+          ).toList();
+
+          return new Scaffold(
+            appBar: new AppBar(
+              title: new Text('Saved Suggestions'),
+            ),
+            body: new ListView(children: divided),
+          );
+        },
+      ),
     );
   }
 }
